@@ -1,23 +1,24 @@
 import React, { useState } from "react";
-import {
-  View,
+import { View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  useColorScheme,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 export default function LoginScreen() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  // 🚨 erros
   const [emailError, setEmailError] = useState("");
   const [senhaError, setSenhaError] = useState("");
 
@@ -27,21 +28,18 @@ export default function LoginScreen() {
     setEmailError("");
     setSenhaError("");
 
-    // valida email
     if (!email.includes("@")) {
       setEmailError("E-mail inválido");
       erro = true;
     }
 
-    // valida senha
-    if (senha.length < 4) {
-      setSenhaError("Senha deve ter pelo menos 4 caracteres");
+    if (senha.length < 8) {
+      setSenhaError("A senha deve ter pelo menos 8 caractéres.");
       erro = true;
     }
 
     if (erro) return;
 
-    // login simulado
     if (email.includes("medico")) {
       router.push("/medico");
     } else {
@@ -50,25 +48,29 @@ export default function LoginScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: isDark ? "#0F172A" : "#F4F8FB" }]}>
 
-      {/* ÍCONE */}
-      <Ionicons name="medical" size={70} color="#007AFF" />
+      <Ionicons name="medical" size={70} color={isDark ? "#60A5FA" : "#007AFF"} />
 
-      <Text style={styles.titulo}>ClínicaJá</Text>
-      <Text style={styles.subtitulo}>
+      <Text style={[styles.titulo, { color: isDark ? "#60A5FA" : "#007AFF" }]}>
+        ClínicaJá
+      </Text>
+
+      <Text style={[styles.subtitulo, { color: isDark ? "#CBD5E1" : "#666" }]}>
         Bem-vindo! Faça login para continuar.
       </Text>
 
       {/* EMAIL */}
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, {
+        backgroundColor: isDark ? "#1E293B" : "#FFF",
+        borderColor: isDark ? "#334155" : "#DDD"
+      }]}>
         <Ionicons name="mail-outline" size={22} color="#777" style={styles.icon} />
 
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: isDark ? "#fff" : "#000" }]}
           placeholder="E-mail"
-          keyboardType="email-address"
-          autoCapitalize="none"
+          placeholderTextColor="#999"
           value={email}
           onChangeText={(text) => {
             setEmail(text);
@@ -82,12 +84,16 @@ export default function LoginScreen() {
       ) : null}
 
       {/* SENHA */}
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, {
+        backgroundColor: isDark ? "#1E293B" : "#FFF",
+        borderColor: isDark ? "#334155" : "#DDD"
+      }]}>
         <Ionicons name="lock-closed-outline" size={22} color="#777" style={styles.icon} />
 
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: isDark ? "#fff" : "#000" }]}
           placeholder="Senha"
+          placeholderTextColor="#999"
           secureTextEntry={!mostrarSenha}
           value={senha}
           onChangeText={(text) => {
@@ -114,39 +120,39 @@ export default function LoginScreen() {
         <Text style={styles.textoBotao}>Entrar</Text>
       </TouchableOpacity>
 
-      {/* LINKS */}
       <TouchableOpacity>
-        <Text style={styles.link}>Esqueci minha senha?</Text>
+        <Text style={[styles.link, { color: isDark ? "#60A5FA" : "#007AFF" }]}>
+          Esqueci minha senha?
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity>
-        <Text style={styles.link}>Não possui conta? Cadastre-se</Text>
+        <Text style={[styles.link, { color: isDark ? "#60A5FA" : "#007AFF" }]}>
+          Não possui conta? Cadastre-se
+        </Text>
       </TouchableOpacity>
 
     </ScrollView>
   );
 }
 
-/* 🎨 STYLE */
+/* 🎨 STYLE BASE */
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 25,
-    backgroundColor: "#F4F8FB",
   },
 
   titulo: {
     fontSize: 34,
     fontWeight: "bold",
-    color: "#007AFF",
     marginTop: 10,
   },
 
   subtitulo: {
     fontSize: 16,
-    color: "#666",
     textAlign: "center",
     marginTop: 5,
     marginBottom: 35,
@@ -156,9 +162,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "75%",
-    backgroundColor: "#FFF",
     borderWidth: 1,
-    borderColor: "#DDD",
     borderRadius: 12,
     paddingHorizontal: 12,
     marginBottom: 10,
@@ -190,7 +194,6 @@ const styles = StyleSheet.create({
   },
 
   link: {
-    color: "#007AFF",
     fontSize: 15,
     marginTop: 18,
     textAlign: "center",
