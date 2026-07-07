@@ -5,7 +5,7 @@ export interface Paciente {
   dataNascimento: string;
   email: string;
   telefone: string;
-  sexo: 'Macho' | 'Fêmea' | 'Outro'; // Usado termos clínicos ou padrão: 'Masculino' | 'Feminino' | 'Outro'
+  sexo: 'Masculino' | 'Feminino' | 'Outro';
   cep: string;
   endereco: string;
   numero: string;
