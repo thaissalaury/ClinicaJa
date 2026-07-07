@@ -8,8 +8,10 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function Cliente() {
+  const router = useRouter();
   const isDark = useColorScheme() === "dark";
 
   return (
@@ -86,6 +88,15 @@ export default function Cliente() {
       <TouchableOpacity style={styles.mainButton}>
         <Ionicons name="add-circle-outline" size={22} color="#fff" />
         <Text style={styles.buttonText}>Agendar consulta</Text>
+      </TouchableOpacity>
+
+      {/* Botão de Cadastro de Paciente */}
+      <TouchableOpacity
+        style={[styles.mainButton, { backgroundColor: isDark ? "#60A5FA" : "#007AFF", marginTop: 12 }]}
+        onPress={() => router.push("/cadastro-paciente")}
+      >
+        <Ionicons name="person-add-outline" size={22} color="#fff" />
+        <Text style={styles.buttonText}>Cadastrar Paciente</Text>
       </TouchableOpacity>
     </ScrollView>
   );
