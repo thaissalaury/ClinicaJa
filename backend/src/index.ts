@@ -7,6 +7,7 @@ dotenv.config();
 import authRoutes from './routes/authRoutes';
 import pacienteRoutes from './routes/pacienteRoutes';
 import medicoRoutes from './routes/medicoRoutes';
+import consultaRoutes from './routes/consultaRoutes';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/pacientes', pacienteRoutes);
 app.use('/api/medicos', medicoRoutes);
+app.use('/api/consultas', consultaRoutes);
 
 // Rota de Healthcheck
 app.get('/health', (req, res) => {
