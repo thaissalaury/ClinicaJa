@@ -1,5 +1,22 @@
-// URL base do backend obtida das variáveis de ambiente do Expo (.env)
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
+import Constants from 'expo-constants';
+
+const getBaseUrl = (): string => {
+  // Se o desenvolvedor definiu uma URL específica via env (opcional), usa ela
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+
+  // Em desenvolvimento (Expo Go), extraímos o IP do servidor Metro automaticamente
+  const hostUri = Constants.expoConfig?.hostUri;
+  if (hostUri) {
+    const ip = hostUri.split(':')[0];
+    return `http://${ip}:3000/api`;
+  }
+
+  return 'http://localhost:3000/api';
+};
+
+const BASE_URL = getBaseUrl();
 
 interface ApiResponse {
   ok: boolean;
