@@ -1,5 +1,5 @@
-// URL base do backend ajustada para o seu IP local para conexões do celular/emulador
-const BASE_URL = 'http://192.168.0.5:3000/api';
+// URL base do backend obtida das variáveis de ambiente do Expo (.env)
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 interface ApiResponse {
   ok: boolean;
