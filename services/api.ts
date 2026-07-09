@@ -1,6 +1,5 @@
-// URL base do backend. Para Android emulador, use http://10.0.2.2:3000
-// Para dispositivo físico na mesma rede, use o IP da máquina (ex: http://192.168.0.100:3000)
-const BASE_URL = 'http://localhost:3000/api';
+// URL base do backend ajustada para o seu IP local para conexões do celular/emulador
+const BASE_URL = 'http://192.168.0.5:3000/api';
 
 interface ApiResponse {
   ok: boolean;
