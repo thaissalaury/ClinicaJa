@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
-  View,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  ScrollView,
   useColorScheme,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 
 type Perfil = "medico" | "paciente";
 
@@ -41,7 +41,7 @@ export default function LoginScreen() {
   const [emailError, setEmailError] = useState("");
   const [senhaError, setSenhaError] = useState("");
 
-  function fazerLogin() {
+  async function fazerLogin() {
     let erro = false;
 
     setEmailError("");
@@ -59,7 +59,32 @@ export default function LoginScreen() {
 
     if (erro) return;
 
-    router.push(perfilSelecionado === "medico" ? "/medico" : "/cliente");
+    try {
+      const { apiRequest } = await import('@/services/api');
+      const { saveAccessToken } = await import('@/utils/authToken');
+
+      const result = await apiRequest('/auth/login', 'POST', {
+        email: email.trim(),
+        password: senha,
+      });
+
+      if (!result.ok) {
+        setSenhaError(result.error || 'Erro ao fazer login');
+        return;
+      }
+
+      const token = result.data?.session?.access_token;
+      if (!token) {
+        setSenhaError('Sessão não retornada pelo servidor. Tente novamente.');
+        return;
+      }
+
+      await saveAccessToken(token);
+
+      router.push(perfilSelecionado === "medico" ? "/medico" : "/cliente");
+    } catch (e: any) {
+      setSenhaError(e?.message || 'Erro ao fazer login');
+    }
   }
 
   return (
@@ -240,8 +265,14 @@ export default function LoginScreen() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity accessibilityRole="button">
-          <Text style={[styles.link, { color: isDark ? "#60A5FA" : "#007AFF" }]}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Cadastre-se"
+          onPress={() =>
+            router.push(perfilSelecionado === "medico" ? "/cadastro-medico" : "/cadastro-paciente")
+          }
+        >
+          <Text style={[styles.link, { color: isDark ? "#60A5FA" : "#007AFF" }]}> 
             Não possui conta? Cadastre-se
           </Text>
         </TouchableOpacity>
