@@ -9,6 +9,12 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Email e senha são obrigatórios' });
     }
 
+    if (!supabase) {
+      return res.status(503).json({
+        error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.'
+      });
+    }
+
     // Registra o usuário no Supabase Auth
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -34,6 +40,12 @@ export const login = async (req: Request, res: Response) => {
 
     if (!email || !password) {
       return res.status(400).json({ error: 'Email e senha são obrigatórios' });
+    }
+
+    if (!supabase) {
+      return res.status(503).json({
+        error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.'
+      });
     }
 
     // Tenta fazer o login com o Supabase Auth

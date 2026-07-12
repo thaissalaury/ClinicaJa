@@ -3,7 +3,15 @@ import { getScopedClient } from '../config/scopedClient';
 
 export const createMedico = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
+
     const userId = req.user.id;
     
     const { 
@@ -42,7 +50,14 @@ export const createMedico = async (req: Request, res: Response) => {
 
 export const getMedicoMe = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     
     const { data, error } = await supabase
       .from('medicos')
@@ -62,7 +77,14 @@ export const getMedicoMe = async (req: Request, res: Response) => {
 
 export const getAllMedicos = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     
     // Qualquer usuário com token válido (paciente ou médico) pode listar todos os médicos.
     // O RLS (Row Level Security) que configuramos permite SELECT para role 'authenticated'.

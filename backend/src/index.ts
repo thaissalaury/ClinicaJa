@@ -1,13 +1,14 @@
-import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
 
 dotenv.config();
 
+import { isSupabaseConfigured } from './config/supabaseClient';
 import authRoutes from './routes/authRoutes';
-import pacienteRoutes from './routes/pacienteRoutes';
-import medicoRoutes from './routes/medicoRoutes';
 import consultaRoutes from './routes/consultaRoutes';
+import medicoRoutes from './routes/medicoRoutes';
+import pacienteRoutes from './routes/pacienteRoutes';
 
 const app = express();
 
@@ -23,7 +24,24 @@ app.use('/api/consultas', consultaRoutes);
 
 // Rota de Healthcheck
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Backend ClínicaJá está rodando!' });
+  if (!isSupabaseConfigured) {
+    return res.status(503).json({
+      status: 'MISCONFIGURED',
+      message: 'Backend ClínicaJá está rodando, mas o Supabase ainda não está configurado.',
+      supabase: {
+        configured: false,
+        requiredEnvVars: ['SUPABASE_URL', 'SUPABASE_ANON_KEY']
+      }
+    });
+  }
+
+  return res.json({
+    status: 'OK',
+    message: 'Backend ClínicaJá está rodando e o Supabase está configurado.',
+    supabase: {
+      configured: true
+    }
+  });
 });
 
 const PORT = process.env.PORT || 3000;

@@ -3,7 +3,14 @@ import { getScopedClient } from '../config/scopedClient';
 
 export const createPaciente = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     
     // O id do usuário autenticado vem do middleware
     const userId = req.user.id;
@@ -51,7 +58,14 @@ export const createPaciente = async (req: Request, res: Response) => {
 
 export const getPacienteMe = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     
     // O banco já filtrará automaticamente pelo user_id do token logado via RLS!
     // Pegamos o primeiro perfil que a política RLS permitir visualizar.

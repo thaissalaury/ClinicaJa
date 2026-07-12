@@ -3,12 +3,16 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL?.trim();
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY?.trim();
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Faltam as variáveis de ambiente SUPABASE_URL ou SUPABASE_ANON_KEY no arquivo .env');
-}
+const hasPlaceholderValue = (value?: string) => {
+  if (!value) {
+    return true;
+  }
+
+  return /SEU_|YOUR_|changeme|example/i.test(value);
+};
 
 /**
  * Cria uma instância do Supabase com o token do usuário logado.
@@ -16,6 +20,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
  * de acordo com o usuário que está fazendo a requisição.
  */
 export const getScopedClient = (token: string) => {
+  if (!supabaseUrl || !supabaseAnonKey || hasPlaceholderValue(supabaseUrl) || hasPlaceholderValue(supabaseAnonKey)) {
+    return null;
+  }
+
   return createClient(supabaseUrl, supabaseAnonKey, {
     global: {
       headers: {

@@ -3,7 +3,14 @@ import { getScopedClient } from '../config/scopedClient';
 
 export const createConsulta = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     
     // 1. Descobrir o paciente_id real a partir do usuário logado
     const { data: pacienteData, error: pacienteError } = await supabase
@@ -49,7 +56,14 @@ export const createConsulta = async (req: Request, res: Response) => {
 
 export const getConsultasPaciente = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     
     // Busca o paciente ID primeiro
     const { data: pacienteData, error: pacienteError } = await supabase
@@ -84,7 +98,14 @@ export const getConsultasPaciente = async (req: Request, res: Response) => {
 
 export const getConsultasMedico = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     
     // Busca o médico ID primeiro
     const { data: medicoData, error: medicoError } = await supabase
@@ -119,7 +140,14 @@ export const getConsultasMedico = async (req: Request, res: Response) => {
 
 export const updateStatusConsulta = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     const { id } = req.params;
     const { status } = req.body;
 
@@ -148,7 +176,14 @@ export const updateStatusConsulta = async (req: Request, res: Response) => {
 
 export const deleteConsulta = async (req: Request, res: Response) => {
   try {
-    const supabase = getScopedClient(req.token!);
+    if (!req.token) {
+      return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+    }
+
+    const supabase = getScopedClient(req.token);
+    if (!supabase) {
+      return res.status(503).json({ error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.' });
+    }
     const { id } = req.params;
 
     // O RLS garante que só os envolvidos podem deletar

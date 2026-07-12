@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { supabase } from '../config/supabaseClient';
 
 // Estende a tipagem do Request do Express para aceitar user e token
@@ -20,6 +20,12 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     }
 
     const token = authHeader.split(' ')[1];
+
+    if (!supabase) {
+      return res.status(503).json({
+        error: 'Supabase não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY no arquivo .env.'
+      });
+    }
 
     // Verifica o token no Supabase Auth
     const { data, error } = await supabase.auth.getUser(token);
