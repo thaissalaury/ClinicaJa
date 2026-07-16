@@ -1,7 +1,7 @@
 import { Medico } from '../types/medico';
 import { apiRequest } from './api';
 
-const withTimeout = <T>(promise: Promise<T>, ms = 10000): Promise<T> =>
+const withTimeout = <T>(promise: Promise<T>, ms = 60000): Promise<T> =>
   new Promise((resolve, reject) => {
     const timeout = setTimeout(
       () => reject(new Error('Tempo limite de conexão excedido.')),

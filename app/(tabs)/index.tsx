@@ -47,42 +47,64 @@ export default function LoginScreen() {
     setEmailError("");
     setSenhaError("");
 
+    console.log('[LoginScreen] fazerLogin iniciado. Email:', email.trim(), '| Perfil selecionado:', perfilSelecionado);
+
     if (!email.trim().includes("@")) {
       setEmailError("E-mail inválido");
+      console.log('[LoginScreen] Validação de e-mail falhou.');
       erro = true;
     }
 
     if (!senha.trim()) {
       setSenhaError("Digite uma senha para continuar.");
+      console.log('[LoginScreen] Validação de senha falhou: campo vazio.');
       erro = true;
     }
 
-    if (erro) return;
+    if (erro) {
+      console.log('[LoginScreen] fazerLogin interrompido devido a erros de validação local.');
+      return;
+    }
 
     try {
+      console.log('[LoginScreen] Importando apiRequest e saveAccessToken dinamicamente...');
       const { apiRequest } = await import('@/services/api');
       const { saveAccessToken } = await import('@/utils/authToken');
+      console.log('[LoginScreen] Módulos importados com sucesso.');
 
+      console.log('[LoginScreen] Disparando chamada apiRequest para /auth/login...');
       const result = await apiRequest('/auth/login', 'POST', {
         email: email.trim(),
         password: senha,
       });
+      console.log('[LoginScreen] apiRequest retornado. Sucesso (result.ok):', result.ok);
 
       if (!result.ok) {
+        console.warn('[LoginScreen] Falha de login retornada da API:', result.error);
         setSenhaError(result.error || 'Erro ao fazer login');
         return;
       }
 
       const token = result.data?.session?.access_token;
+      console.log('[LoginScreen] Token extraído da resposta:', token ? 'PRESENTE' : 'AUSENTE/NULO');
+      
       if (!token) {
+        console.error('[LoginScreen] Erro: Token de acesso ausente no payload da sessão.');
         setSenhaError('Sessão não retornada pelo servidor. Tente novamente.');
         return;
       }
 
+      console.log('[LoginScreen] Gravando token de acesso no AsyncStorage...');
       await saveAccessToken(token);
+      console.log('[LoginScreen] Gravação de token finalizada. Redirecionando...');
 
-      router.push(perfilSelecionado === "medico" ? "/medico" : "/cliente");
+      const targetPath = perfilSelecionado === "medico" ? "/medico" : "/cliente";
+      console.log('[LoginScreen] Rota de destino calculada:', targetPath);
+
+      router.push(targetPath as any);
+      console.log('[LoginScreen] router.push executado com sucesso para a rota interna.');
     } catch (e: any) {
+      console.error('[LoginScreen] Exceção crítica capturada em fazerLogin:', e);
       setSenhaError(e?.message || 'Erro ao fazer login');
     }
   }
