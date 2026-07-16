@@ -1,16 +1,28 @@
-
-const FALLBACK_IP = '192.168.100.69';
+defina 
+const normalizeBaseUrl = (url: string): string => {
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  return trimmed.endsWith('/api') ? trimmed : `${trimmed.replace(/\/$/, '')}/api`;
+};
 
 const getBaseUrl = (): string => {
+  // Expo publica (ideal)
   const envUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
-  if (envUrl) {
-    return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`;
-  }
+  if (envUrl) return normalizeBaseUrl(envUrl);
 
-  return `http://${FALLBACK_IP}:3000/api`;
+  // Fallback por URL pública via tunnel/host (se você preferir configurar runtime)
+  // Observação: em produção real, isso deve ser removido/ajustado.
+  const host = process.env.EXPO_PUBLIC_API_HOST?.trim();
+  if (host) return normalizeBaseUrl(host);
+
+  // Último recurso: falha com mensagem que ajuda a diagnosticar.
+  throw new Error(
+    'EXPO_PUBLIC_API_URL não está configurada no APK. Defina EXPO_PUBLIC_API_URL apontando para o backend (inclua/ajuste a URL) e gere um novo build.'
+  );
 };
 
 const BASE_URL = getBaseUrl();
+
 
 interface ApiResponse {
   ok: boolean;

@@ -10,8 +10,8 @@
     "backend:start": "npm --prefix backend run start",
     "backend:build": "npm --prefix backend run build",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
   },
